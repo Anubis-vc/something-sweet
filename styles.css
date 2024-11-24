@@ -48,7 +48,6 @@ h1 {
     background-color: #ffc0cb;
     height: 100%;
     border-radius: 9999px;
-    transition: width 2s ease-out;
     display: flex;
     align-items: center;
     justify-content: center;
