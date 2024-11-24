@@ -32,8 +32,27 @@ function updateProgress() {
 	const current = now - start;
 	const progress = Math.min(100, Math.max(0, (current / total) * 100));
 
-	progressBar.style.width = `${progress}%`;
-	progressText.textContent = 	`${Math.round(progress)}%`;
+	let startProgress = parseFloat(progressBar.style.width) || 0;
+    const duration = 2000;
+    const startTime = performance.now();
+
+    function animate(currentTime) {
+        const elapsed = currentTime - startTime;
+        const progress_fraction = Math.min(elapsed / duration, 1);
+        
+        // Calculate current progress using easeOutQuad easing
+        const currentProgress = startProgress + (progress - startProgress) * (1 - Math.pow(1 - progress_fraction, 2));
+        
+        // Update both the bar and text
+        progressBar.style.width = `${currentProgress}%`;
+        progressText.textContent = `${Math.round(currentProgress)}%`;
+
+        if (progress_fraction < 1) {
+            requestAnimationFrame(animate);
+        }
+    }
+
+    requestAnimationFrame(animate);
 }
 
 function updateTimes() {
