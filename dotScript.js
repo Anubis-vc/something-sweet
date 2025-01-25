@@ -10,24 +10,28 @@ const minSpan = document.querySelector('.time.mins span');
 const secSpan = document.querySelector('.time.seconds span');
 
 const june1 = new Date('2024-06-01T00:00:00');
-const jan1 = new Date('2024-01-01T00:00:00');
 const april12 = new Date('2024-04-12T00:00:00');
 const may26 = new Date('2024-05-26T00:00:00');
 const xmas = new Date('2024-12-25T00:00:00');
 const dec30 = new Date('2024-12-30T00:00:00');
+const jan10_2025 = new Date('2025-01-10T00:00:00');
+const may26_2025 = new Date('2025-05-26T00:00:00');
 const currentDate = new Date();
+const startDate = april12;
 
-const ap12DotNum = Math.floor((april12 - jan1) / (1000 * 60 * 60 * 24));
-const may26DotNum = Math.floor((may26 - jan1) / (1000 * 60 * 60 * 24));
-const june1DotNum = Math.floor((june1 - jan1) / (1000 * 60 * 60 * 24));
-const xmasDotNm = Math.floor((xmas - jan1) / (1000 * 60 * 60 * 24));
-const dec30DotNum = Math.floor((dec30 - jan1) / (1000 * 60 * 60 * 24));
-const currDotNum = Math.floor((currentDate - jan1) / (1000 * 60 * 60 * 24));
+const ap12DotNum = Math.floor((april12 - startDate) / (1000 * 60 * 60 * 24));
+const may26DotNum = Math.floor((may26 - startDate) / (1000 * 60 * 60 * 24));
+const june1DotNum = Math.floor((june1 - startDate) / (1000 * 60 * 60 * 24));
+const xmasDotNm = Math.floor((xmas - startDate) / (1000 * 60 * 60 * 24));
+const dec30DotNum = Math.floor((dec30 - startDate) / (1000 * 60 * 60 * 24));
+const jan10_2025_num = Math.floor((jan10_2025 - startDate) / (1000 * 60 * 60 * 24));
+const may26_2025_num = Math.floor((may26_2025 - startDate) / (1000 * 60 * 60 * 24));
+const currDotNum = Math.floor((currentDate - startDate) / (1000 * 60 * 60 * 24));
 
 function updateProgress() {
 	const now = new Date();
-	const start = june1;
-	const end = new Date('2024-12-30T09:15:00');
+	const start = jan10_2025;
+	const end = new Date('2025-05-25T00:00:00');
 	const total = end - start;
 	const current = now - start;
 	const progress = Math.min(100, Math.max(0, (current / total) * 100));
@@ -57,7 +61,7 @@ function updateProgress() {
 
 function updateTimes() {
 	const now = new Date();
-	const end = new Date('2024-12-30T09:15:00');
+	const end = new Date('2025-05-26T00:00:00');
 	const diffRemaining = end - now;
 	const daysRemaining = Math.floor(diffRemaining / (1000 * 60 * 60 * 24));
 	const hoursRemaining = Math.floor(diffRemaining / (1000 * 60 * 60));
@@ -86,13 +90,14 @@ function findDotColor(currDot) {
 	if (currDot > may26DotNum && currDot <= may26DotNum + 4) {
 		return "trip";
 	}
-	else if (currDot - 1 >= ap12DotNum && currDot - 1 <= june1DotNum) {
+	else if ((currDot >= ap12DotNum && currDot <= june1DotNum) ||
+			(currDot >= dec30DotNum && currDot <= jan10_2025_num)) {
 		return 'together';
 	}
 	else if (currDot === xmasDotNm) {
 		return 'xmas';
 	}
-	else if (currDot >= dec30DotNum) {
+	else if (currDot >= may26_2025_num) {
 		return 'back'
 	}
 	else if (currDot === currDotNum) {
@@ -107,7 +112,7 @@ function findDotColor(currDot) {
 }
 
 function formatDate(days) {
-	const newDate = new Date(jan1);
+	const newDate = new Date(startDate);
 	newDate.setDate(newDate.getDate() + days);
 	const dateString = newDate.toDateString().split(' ');
 	const shortDate = `${dateString[1]} ${dateString[2]}`;
@@ -183,6 +188,7 @@ function setupDotListeners(dot, index) {
 }
 
 function createDots(totalDots) {
+	console.log(totalDots);
     const dotSize = calculateDotSize();
 	const gapSize = calculateGapSize(dotSize);
 
@@ -226,7 +232,7 @@ function setupResizeObserver() {
 		for (let entry of entries) {
 			if (entry.target === container) {
 				// come back and fix this for different numbers of dots
-				createDots(376);
+				createDots(410);
 			}
 		}
 	});
@@ -242,6 +248,7 @@ setInterval(() => {
 	updateProgress();
 }, 1000);
 
-const endDate = new Date('2025-01-10T00:00:00');
-totalDays = Math.floor((endDate - jan1) / (1000 * 60 * 60 * 24));
+const endDate = new Date('2025-05-26T00:00:00');
+totalDays = Math.floor((endDate - april12) / (1000 * 60 * 60 * 24));
+console.log(totalDays + 1);
 createDots(totalDays);
