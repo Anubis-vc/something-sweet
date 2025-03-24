@@ -15,6 +15,8 @@ const may26 = new Date('2024-05-26T00:00:00');
 const xmas = new Date('2024-12-25T00:00:00');
 const dec30 = new Date('2024-12-30T00:00:00');
 const jan10_2025 = new Date('2025-01-10T00:00:00');
+const april8_2025 = new Date('2025-04-08T00:00:00');
+const april18_2025 = new Date('2025-04-18T00:00:00');
 const may26_2025 = new Date('2025-05-26T00:00:00');
 const currentDate = new Date();
 const startDate = april12;
@@ -25,13 +27,16 @@ const june1DotNum = Math.floor((june1 - startDate) / (1000 * 60 * 60 * 24));
 const xmasDotNm = Math.floor((xmas - startDate) / (1000 * 60 * 60 * 24));
 const dec30DotNum = Math.floor((dec30 - startDate) / (1000 * 60 * 60 * 24));
 const jan10_2025_num = Math.floor((jan10_2025 - startDate) / (1000 * 60 * 60 * 24));
+const april8_2025_num = Math.floor((april8_2025 - startDate) / (1000 * 60 * 60 * 24));
+const april18_2025_num = Math.floor((april18_2025 - startDate) / (1000 * 60 * 60 * 24));
+console.log(april18_2025_num);
 const may26_2025_num = Math.floor((may26_2025 - startDate) / (1000 * 60 * 60 * 24));
 const currDotNum = Math.floor((currentDate - startDate) / (1000 * 60 * 60 * 24));
 
 function updateProgress() {
 	const now = new Date();
 	const start = jan10_2025;
-	const end = new Date('2025-05-25T00:00:00');
+	const end = new Date('2025-04-08T00:00:00');
 	const total = end - start;
 	const current = now - start;
 	const progress = Math.min(100, Math.max(0, (current / total) * 100));
@@ -61,7 +66,7 @@ function updateProgress() {
 
 function updateTimes() {
 	const now = new Date();
-	const end = new Date('2025-05-26T00:00:00');
+	const end = new Date('2025-04-08T00:00:00');
 	const diffRemaining = end - now;
 	const daysRemaining = Math.floor(diffRemaining / (1000 * 60 * 60 * 24));
 	const hoursRemaining = Math.floor(diffRemaining / (1000 * 60 * 60));
@@ -97,7 +102,7 @@ function findDotColor(currDot) {
 	else if (currDot === xmasDotNm) {
 		return 'xmas';
 	}
-	else if (currDot >= may26_2025_num) {
+	else if (currDot >= april8_2025_num) {
 		return 'back'
 	}
 	else if (currDot === currDotNum) {
@@ -188,7 +193,6 @@ function setupDotListeners(dot, index) {
 }
 
 function createDots(totalDots) {
-	console.log(totalDots);
     const dotSize = calculateDotSize();
 	const gapSize = calculateGapSize(dotSize);
 
@@ -231,8 +235,8 @@ function setupResizeObserver() {
 	const resizeObserver = new ResizeObserver(entries => {
 		for (let entry of entries) {
 			if (entry.target === container) {
-				// come back and fix this for different numbers of dots
-				createDots(410);
+				// TODO: fix this for different numbers of dots
+				createDots(372);
 			}
 		}
 	});
@@ -248,7 +252,7 @@ setInterval(() => {
 	updateProgress();
 }, 1000);
 
-const endDate = new Date('2025-05-26T00:00:00');
+const endDate = new Date('2025-04-18T00:00:00');
 totalDays = Math.floor((endDate - april12) / (1000 * 60 * 60 * 24));
 console.log(totalDays + 1);
 createDots(totalDays);
