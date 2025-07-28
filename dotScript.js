@@ -18,7 +18,9 @@ const jan10_2025 = new Date('2025-01-10T00:00:00');
 const april8_2025 = new Date('2025-04-08T00:00:00');
 const april18_2025 = new Date('2025-04-18T00:00:00');
 const may25_2025 = new Date('2025-05-25T00:00:00')
-const may26_2025 = new Date('2025-05-26T00:00:00');
+const june1_2025 = new Date('2025-06-01T00:00:00')
+const aug_27_2025 = new Date ('2025-08-27T00:00:00')
+// add new date here whenever decided
 const currentDate = new Date();
 const startDate = april12;
 
@@ -31,13 +33,16 @@ const jan10_2025_num = Math.floor((jan10_2025 - startDate) / (1000 * 60 * 60 * 2
 const april8_2025_num = Math.floor((april8_2025 - startDate) / (1000 * 60 * 60 * 24));
 const april18_2025_num = Math.floor((april18_2025 - startDate) / (1000 * 60 * 60 * 24));
 const may25_2025_num = Math.floor((may25_2025 - startDate) / (1000 * 60 * 60 * 24));
-const may26_2025_num = Math.floor((may26_2025 - startDate) / (1000 * 60 * 60 * 24));
+const june1_20205_num = Math.floor((june1_2025 - startDate) / (1000 * 60 * 60 * 24));
+const aug_27_2025_num = Math.floor((aug_27_2025 - startDate) / (1000 * 60 * 60 * 24));
+// add new dotnum here whenever decided for end and start
 const currDotNum = Math.floor((currentDate - startDate) / (1000 * 60 * 60 * 24));
 
 function updateProgress() {
 	const now = new Date();
-	const start = jan10_2025;
-	const end = new Date('2025-05-25T00:00:00');
+	const start = june1_2025;
+	// adjust this every time a new day is decided
+	const end = new Date('2025-08-27T00:00:00');
 	const total = end - start;
 	const current = now - start;
 	const progress = Math.min(100, Math.max(0, (current / total) * 100));
@@ -65,9 +70,10 @@ function updateProgress() {
     requestAnimationFrame(animate);
 }
 
+// TODO: have to globalize these start end end dates
 function updateTimes() {
 	const now = new Date();
-	const end = new Date('2025-05-25T00:00:00');
+	const end = aug_27_2025;
 	const diffRemaining = end - now;
 	const daysRemaining = Math.floor(diffRemaining / (1000 * 60 * 60 * 24));
 	const hoursRemaining = Math.floor(diffRemaining / (1000 * 60 * 60));
@@ -98,13 +104,14 @@ function findDotColor(currDot) {
 	}
 	else if ((currDot >= ap12DotNum && currDot <= june1DotNum) ||
 			(currDot >= dec30DotNum && currDot <= jan10_2025_num) ||
-			(currDot >= april8_2025_num && currDot <= april18_2025_num)) {
+			(currDot >= april8_2025_num && currDot <= april18_2025_num) ||
+			(currDot >= may25_2025_num && currDot <= june1_20205_num)) {
 		return 'together';
 	}
 	else if (currDot === xmasDotNm) {
 		return 'xmas';
 	}
-	else if (currDot >= may25_2025_num) {
+	else if (currDot >= aug_27_2025_num) {
 		return 'back'
 	}
 	else if (currDot === currDotNum) {
@@ -238,7 +245,8 @@ function setupResizeObserver() {
 		for (let entry of entries) {
 			if (entry.target === container) {
 				// TODO: fix this for different numbers of dots
-				createDots(409);
+				// fix this every time a new date is established
+				createDots(503);
 			}
 		}
 	});
@@ -254,7 +262,8 @@ setInterval(() => {
 	updateProgress();
 }, 1000);
 
-const endDate = new Date('2025-05-25T00:00:00');
+// change this every time a new date is established
+const endDate = new Date('2025-08-27T00:00:00');
 totalDays = Math.floor((endDate - april12) / (1000 * 60 * 60 * 24));
 console.log(totalDays + 1);
 createDots(totalDays);
