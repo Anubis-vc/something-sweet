@@ -1,26 +1,30 @@
-const container = document.getElementById('dotContainer');
-const tooltip = document.getElementById('tooltip');
-const root = document.querySelector(':root');
-const progressBar = document.querySelector('.progress-bar');
-const progressText = document.querySelector('.progress-text');
+const container = document.getElementById("dotContainer");
+const tooltip = document.getElementById("tooltip");
+const root = document.querySelector(":root");
+const progressBar = document.querySelector(".progress-bar");
+const progressText = document.querySelector(".progress-text");
 
-const daysSpan = document.querySelector('h1 span');
-const hrsSpan = document.querySelector('.time.hours span')
-const minSpan = document.querySelector('.time.mins span');
-const secSpan = document.querySelector('.time.seconds span');
+const daysSpan = document.querySelector("h1 span");
+const hrsSpan = document.querySelector(".time.hours span");
+const minSpan = document.querySelector(".time.mins span");
+const secSpan = document.querySelector(".time.seconds span");
 
-const june1 = new Date('2024-06-01T00:00:00');
-const april12 = new Date('2024-04-12T00:00:00');
-const may26 = new Date('2024-05-26T00:00:00');
-const dec30 = new Date('2024-12-30T00:00:00');
-const jan10_2025 = new Date('2025-01-10T00:00:00');
-const april8_2025 = new Date('2025-04-08T00:00:00');
-const april18_2025 = new Date('2025-04-18T00:00:00');
-const may25_2025 = new Date('2025-05-25T00:00:00')
-const june1_2025 = new Date('2025-06-01T00:00:00')
-const aug_27_2025 = new Date ('2025-08-27T00:00:00')
-const sep_1_2025 = new Date('2025-09-01T00:00:00')
-const dec_28_2025 = new Date('2025-12-28T00:00:00')
+const june1 = new Date("2024-06-01T00:00:00");
+const april12 = new Date("2024-04-12T00:00:00");
+const may26 = new Date("2024-05-26T00:00:00");
+const dec30 = new Date("2024-12-30T00:00:00");
+const jan10_2025 = new Date("2025-01-10T00:00:00");
+const april8_2025 = new Date("2025-04-08T00:00:00");
+const april18_2025 = new Date("2025-04-18T00:00:00");
+const may25_2025 = new Date("2025-05-25T00:00:00");
+const june1_2025 = new Date("2025-06-01T00:00:00");
+const aug_27_2025 = new Date("2025-08-27T00:00:00");
+const sep_1_2025 = new Date("2025-09-01T00:00:00");
+const dec_28_2025 = new Date("2025-12-28T00:00:00");
+const jan_02_2026 = new Date("2026-01-02T00:00:00");
+const jan_15_2026 = new Date("2026-01-15T00:00:00");
+const jan_31_2026 = new Date("2026-01-31T00:00:00");
+const may_19_2026 = new Date("2026-05-19T00:00:00");
 // add new date here whenever decided
 const currentDate = new Date();
 const startDate = april12;
@@ -29,244 +33,272 @@ const ap12DotNum = Math.floor((april12 - startDate) / (1000 * 60 * 60 * 24));
 const may26DotNum = Math.floor((may26 - startDate) / (1000 * 60 * 60 * 24));
 const june1DotNum = Math.floor((june1 - startDate) / (1000 * 60 * 60 * 24));
 const dec30DotNum = Math.floor((dec30 - startDate) / (1000 * 60 * 60 * 24));
-const jan10_2025_num = Math.floor((jan10_2025 - startDate) / (1000 * 60 * 60 * 24));
-const april8_2025_num = Math.floor((april8_2025 - startDate) / (1000 * 60 * 60 * 24));
-const april18_2025_num = Math.floor((april18_2025 - startDate) / (1000 * 60 * 60 * 24));
-const may25_2025_num = Math.floor((may25_2025 - startDate) / (1000 * 60 * 60 * 24));
-const june1_20205_num = Math.floor((june1_2025 - startDate) / (1000 * 60 * 60 * 24));
-const aug_27_2025_num = Math.floor((aug_27_2025 - startDate) / (1000 * 60 * 60 * 24));
-const sep_1_2025_num = Math.floor((sep_1_2025 - startDate) / (1000 * 60 * 60 * 24));
-const dec_28_2025_num = Math.floor((dec_28_2025 - startDate) / (1000 * 60 * 60 * 24));
+const jan10_2025_num = Math.floor(
+  (jan10_2025 - startDate) / (1000 * 60 * 60 * 24),
+);
+const april8_2025_num = Math.floor(
+  (april8_2025 - startDate) / (1000 * 60 * 60 * 24),
+);
+const april18_2025_num = Math.floor(
+  (april18_2025 - startDate) / (1000 * 60 * 60 * 24),
+);
+const may25_2025_num = Math.floor(
+  (may25_2025 - startDate) / (1000 * 60 * 60 * 24),
+);
+const june1_20205_num = Math.floor(
+  (june1_2025 - startDate) / (1000 * 60 * 60 * 24),
+);
+const aug_27_2025_num = Math.floor(
+  (aug_27_2025 - startDate) / (1000 * 60 * 60 * 24),
+);
+const sep_1_2025_num = Math.floor(
+  (sep_1_2025 - startDate) / (1000 * 60 * 60 * 24),
+);
+const dec_28_2025_num = Math.floor(
+  (dec_28_2025 - startDate) / (1000 * 60 * 60 * 24),
+);
+const jan_02_2026_num = Math.floor(
+  (jan_02_2026 - startDate) / (1000 * 60 * 60 * 24),
+);
+const jan_15_2026_num = Math.floor(
+  (jan_15_2026 - startDate) / (1000 * 60 * 60 * 24),
+);
+const jan_31_2026_num = Math.floor(
+  (jan_31_2026 - startDate) / (1000 * 60 * 60 * 24),
+);
+const may_19_2026_num = Math.floor(
+  (may_19_2026 - startDate) / (1000 * 60 * 60 * 24),
+);
 // add new dotnum here whenever decided for end and start
-const currDotNum = Math.floor((currentDate - startDate) / (1000 * 60 * 60 * 24));
+const currDotNum = Math.floor(
+  (currentDate - startDate) / (1000 * 60 * 60 * 24),
+);
 
 function updateProgress() {
-	const now = new Date();
-	const start = june1_2025;
-	// adjust this every time a new day is decided
-	const end = dec_28_2025
-	const total = end - start;
-	const current = now - start;
-	const progress = Math.min(100, Math.max(0, (current / total) * 100));
+  const now = new Date();
+  const start = jan_31_2026;
+  // adjust this every time a new day is decided
+  const end = may_19_2026;
+  const total = end - start;
+  const current = now - start;
+  const progress = Math.min(100, Math.max(0, (current / total) * 100));
 
-	let startProgress = parseFloat(progressBar.style.width) || 0;
-    const duration = 2000;
-    const startTime = performance.now();
+  let startProgress = parseFloat(progressBar.style.width) || 0;
+  const duration = 2000;
+  const startTime = performance.now();
 
-    function animate(currentTime) {
-        const elapsed = currentTime - startTime;
-        const progress_fraction = Math.min(elapsed / duration, 1);
-        
-        // Calculate current progress using easeOutQuad easing
-        const currentProgress = startProgress + (progress - startProgress) * (1 - Math.pow(1 - progress_fraction, 2));
-        
-        // Update both the bar and text
-        progressBar.style.width = `${currentProgress}%`;
-        progressText.textContent = `${Math.round(currentProgress)}%`;
+  function animate(currentTime) {
+    const elapsed = currentTime - startTime;
+    const progress_fraction = Math.min(elapsed / duration, 1);
 
-        if (progress_fraction < 1) {
-            requestAnimationFrame(animate);
-        }
+    // Calculate current progress using easeOutQuad easing
+    const currentProgress =
+      startProgress +
+      (progress - startProgress) * (1 - Math.pow(1 - progress_fraction, 2));
+
+    // Update both the bar and text
+    progressBar.style.width = `${currentProgress}%`;
+    progressText.textContent = `${Math.round(currentProgress)}%`;
+
+    if (progress_fraction < 1) {
+      requestAnimationFrame(animate);
     }
+  }
 
-    requestAnimationFrame(animate);
+  requestAnimationFrame(animate);
 }
 
 // TODO: have to globalize these start end end dates
 function updateTimes() {
-	const now = new Date();
-	const end = dec_28_2025;
-	const diffRemaining = end - now;
-	const daysRemaining = Math.floor(diffRemaining / (1000 * 60 * 60 * 24));
-	const hoursRemaining = Math.floor(diffRemaining / (1000 * 60 * 60));
-	const minsRemaining = Math.floor(diffRemaining / (1000 * 60));
-	const secondsRemaining = Math.floor(diffRemaining / (1000));
+  const now = new Date();
+  const end = may_19_2026;
+  const diffRemaining = end - now;
+  const daysRemaining = Math.floor(diffRemaining / (1000 * 60 * 60 * 24));
+  const hoursRemaining = Math.floor(diffRemaining / (1000 * 60 * 60));
+  const minsRemaining = Math.floor(diffRemaining / (1000 * 60));
+  const secondsRemaining = Math.floor(diffRemaining / 1000);
 
-	daysSpan.innerHTML = daysRemaining;
-	hrsSpan.innerHTML = hoursRemaining;
-	minSpan.innerHTML = minsRemaining;
-	secSpan.innerHTML = secondsRemaining;
+  daysSpan.innerHTML = daysRemaining;
+  hrsSpan.innerHTML = hoursRemaining;
+  minSpan.innerHTML = minsRemaining;
+  secSpan.innerHTML = secondsRemaining;
 }
 
 function calculateDotSize() {
-	const containerWidth = container.offsetWidth;
-	if (containerWidth < 400) return 6;
-	if (containerWidth < 768) return 8;
-	if (containerWidth < 1024) return 10;
-	return 12;
+  const containerWidth = container.offsetWidth;
+  if (containerWidth < 400) return 6;
+  if (containerWidth < 768) return 8;
+  if (containerWidth < 1024) return 10;
+  return 12;
 }
 
 function calculateGapSize(dotSize) {
-	return dotSize / 0.75;
+  return dotSize / 0.75;
 }
 
 function findDotColor(currDot) {
-	if (currDot > may26DotNum && currDot <= may26DotNum + 4) {
-		return "trip";
-	}
-	else if ((currDot >= ap12DotNum && currDot <= june1DotNum) ||
-			(currDot >= dec30DotNum && currDot <= jan10_2025_num) ||
-			(currDot >= april8_2025_num && currDot <= april18_2025_num) ||
-			(currDot >= may25_2025_num && currDot <= june1_20205_num) || 
-			(currDot >= aug_27_2025_num && currDot <= sep_1_2025_num)) {
-		return 'together';
-	}
-	// else if (currDot === xmasDotNm) {
-	// 	return 'xmas';
-	// }
-	else if (currDot >= dec_28_2025_num) {
-		return 'back'
-	}
-	else if (currDot === currDotNum) {
-		return 'curr';
-	}
-	else if (currDot > currDotNum) {
-		return 'pending'
-	}
-	else {
-		return 'complete';
-	}
+  if (currDot > may26DotNum && currDot <= may26DotNum + 4) {
+    return "trip";
+  } else if (
+    (currDot >= ap12DotNum && currDot <= june1DotNum) ||
+    (currDot >= dec30DotNum && currDot <= jan10_2025_num) ||
+    (currDot >= april8_2025_num && currDot <= april18_2025_num) ||
+    (currDot >= may25_2025_num && currDot <= june1_20205_num) ||
+    (currDot >= aug_27_2025_num && currDot <= sep_1_2025_num) ||
+    (currDot >= dec_28_2025_num && currDot <= jan_02_2026_num) ||
+    (currDot >= jan_15_2026_num && currDot <= jan_31_2026_num)
+  ) {
+    return "together";
+  } else if (currDot >= may_19_2026_num) {
+    return "back";
+  } else if (currDot === currDotNum) {
+    return "curr";
+  } else if (currDot > currDotNum) {
+    return "pending";
+  } else {
+    return "complete";
+  }
 }
 
 function formatDate(days) {
-	const newDate = new Date(startDate);
-	newDate.setDate(newDate.getDate() + days);
-	const dateString = newDate.toDateString().split(' ');
-	const shortDate = `${dateString[1]} ${dateString[2]}`;
-	return shortDate;
+  const newDate = new Date(startDate);
+  newDate.setDate(newDate.getDate() + days);
+  const dateString = newDate.toDateString().split(" ");
+  const shortDate = `${dateString[1]} ${dateString[2]}`;
+  return shortDate;
 }
 
 function setupDotListeners(dot, index) {
-	const handleMouseEnter = (e) => {
-		const rect = e.target.getBoundingClientRect();
-		const label = formatDate(index);
-		
-		tooltip.textContent = label;
-		
-		// Calculate positions
-		const dotCenterX = rect.left + (rect.width / 2);
-		const dotTopY = rect.top;
-		
-		tooltip.style.display = 'block';
-		const tooltipRect = tooltip.getBoundingClientRect();
-		
-		let left = dotCenterX - (tooltipRect.width / 2);
-		let top = dotTopY - tooltipRect.height - 8;
-		
-		// Adjust if tooltip would go off screen
-		if (left < 0) left = 0;
-		if (left + tooltipRect.width > window.innerWidth) {
-			left = window.innerWidth - tooltipRect.width;
-		}
-		
-		// If tooltip would go above viewport, show it below the dot instead
-		if (top < 0) {
-			top = rect.bottom + 8;
-		}
-		
-		// Apply positions
-		tooltip.style.left = `${left}px`;
-		tooltip.style.top = `${top}px`;
-		
-		// Make visible with transition
-		requestAnimationFrame(() => {
-			tooltip.classList.add('visible');
-		});
-	};
+  const handleMouseEnter = (e) => {
+    const rect = e.target.getBoundingClientRect();
+    const label = formatDate(index);
 
-	const handleMouseLeave = () => {
-		tooltip.classList.remove('visible');
-		setTimeout(() => {
-			if (!tooltip.classList.contains('visible')) {
-				tooltip.style.display = 'none';
-			}
-		}, 400); // Match transition duration
-	};
+    tooltip.textContent = label;
 
-	// Touch support
-	const handleTouch = (e) => {
-		e.preventDefault();
-		const wasPreviouslyShown = tooltip.classList.contains('visible');
-		
-		// Hide any existing tooltip
-		if (wasPreviouslyShown) {
-			handleMouseLeave();
-		} else {
-			handleMouseEnter(e);
-			// Auto-hide tooltip after 1.5 seconds on touch devices
-			setTimeout(handleMouseLeave, 1500);
-		}
-	};
+    // Calculate positions
+    const dotCenterX = rect.left + rect.width / 2;
+    const dotTopY = rect.top;
 
-	// Add event listeners
-	dot.addEventListener('mouseenter', handleMouseEnter);
-	dot.addEventListener('mouseleave', handleMouseLeave);
-	dot.addEventListener('touchstart', handleTouch);
+    tooltip.style.display = "block";
+    const tooltipRect = tooltip.getBoundingClientRect();
+
+    let left = dotCenterX - tooltipRect.width / 2;
+    let top = dotTopY - tooltipRect.height - 8;
+
+    // Adjust if tooltip would go off screen
+    if (left < 0) left = 0;
+    if (left + tooltipRect.width > window.innerWidth) {
+      left = window.innerWidth - tooltipRect.width;
+    }
+
+    // If tooltip would go above viewport, show it below the dot instead
+    if (top < 0) {
+      top = rect.bottom + 8;
+    }
+
+    // Apply positions
+    tooltip.style.left = `${left}px`;
+    tooltip.style.top = `${top}px`;
+
+    // Make visible with transition
+    requestAnimationFrame(() => {
+      tooltip.classList.add("visible");
+    });
+  };
+
+  const handleMouseLeave = () => {
+    tooltip.classList.remove("visible");
+    setTimeout(() => {
+      if (!tooltip.classList.contains("visible")) {
+        tooltip.style.display = "none";
+      }
+    }, 400); // Match transition duration
+  };
+
+  // Touch support
+  const handleTouch = (e) => {
+    e.preventDefault();
+    const wasPreviouslyShown = tooltip.classList.contains("visible");
+
+    // Hide any existing tooltip
+    if (wasPreviouslyShown) {
+      handleMouseLeave();
+    } else {
+      handleMouseEnter(e);
+      // Auto-hide tooltip after 1.5 seconds on touch devices
+      setTimeout(handleMouseLeave, 1500);
+    }
+  };
+
+  // Add event listeners
+  dot.addEventListener("mouseenter", handleMouseEnter);
+  dot.addEventListener("mouseleave", handleMouseLeave);
+  dot.addEventListener("touchstart", handleTouch);
 }
 
 function createDots(totalDots) {
-    const dotSize = calculateDotSize();
-	const gapSize = calculateGapSize(dotSize);
+  const dotSize = calculateDotSize();
+  const gapSize = calculateGapSize(dotSize);
 
-	// added to help dots mantain color on resize
-	// const existingDots = Array.from(container.children).map(dot => {
-    //     const classes = Array.from(dot.classList);
-    //     return classes.find(cls => cls !== 'dot'); // Store the color class
-    // });
-    
-    container.innerHTML = '';
+  // added to help dots mantain color on resize
+  // const existingDots = Array.from(container.children).map(dot => {
+  //     const classes = Array.from(dot.classList);
+  //     return classes.find(cls => cls !== 'dot'); // Store the color class
+  // });
 
-	root.style.setProperty('--dotSize', `${dotSize}px`);
-	container.style.setProperty('--gapSize', `${gapSize}px`)
+  container.innerHTML = "";
 
-    // Create all dots
-    for (let i = 0; i < totalDots; i++) {
-        const dot = document.createElement('div');
-		// const dotColor = existingDots[i] || findDotColor(i);
-		const dotColor = findDotColor(i);
-        dot.className = `dot ${dotColor}`;
-		setupDotListeners(dot, i);
-        
-        container.appendChild(dot);
-    }
+  root.style.setProperty("--dotSize", `${dotSize}px`);
+  container.style.setProperty("--gapSize", `${gapSize}px`);
+
+  // Create all dots
+  for (let i = 0; i < totalDots; i++) {
+    const dot = document.createElement("div");
+    // const dotColor = existingDots[i] || findDotColor(i);
+    const dotColor = findDotColor(i);
+    dot.className = `dot ${dotColor}`;
+    setupDotListeners(dot, i);
+
+    container.appendChild(dot);
+  }
 }
 
-function debounce (func, wait) {
-	let timeout = null;
-	return function executedFunction(...args) {
-		const later = () => {
-			clearTimeout(timeout);
-			func(...args);
-		};
-		clearTimeout(timeout);
-		timeout = setTimeout(later, wait);
-	}
+function debounce(func, wait) {
+  let timeout = null;
+  return function executedFunction(...args) {
+    const later = () => {
+      clearTimeout(timeout);
+      func(...args);
+    };
+    clearTimeout(timeout);
+    timeout = setTimeout(later, wait);
+  };
 }
 
 function setupResizeObserver() {
-	const resizeObserver = new ResizeObserver(entries => {
-		for (let entry of entries) {
-			if (entry.target === container) {
-				// TODO: fix this for different numbers of dots
-				// fix this every time a new date is established
-				createDots(626);
-			}
-		}
-	});
-	
-	resizeObserver.observe(container);
+  const resizeObserver = new ResizeObserver((entries) => {
+    for (let entry of entries) {
+      if (entry.target === container) {
+        // TODO: fix this for different numbers of dots
+        // fix this every time a new date is established
+        createDots(768);
+      }
+    }
+  });
+
+  resizeObserver.observe(container);
 }
 
 setupResizeObserver();
 updateTimes();
 updateProgress();
 setInterval(() => {
-	updateTimes();
-	updateProgress();
+  updateTimes();
+  updateProgress();
 }, 1000);
 
 // change this every time a new date is established
-const endDate = new Date('2025-12-28T00:00:00');
+const endDate = new Date("2025-12-19T00:00:00");
 totalDays = Math.floor((endDate - april12) / (1000 * 60 * 60 * 24));
 console.log(totalDays + 1);
 createDots(totalDays);
