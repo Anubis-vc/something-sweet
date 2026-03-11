@@ -9,76 +9,56 @@ const hrsSpan = document.querySelector(".time.hours span");
 const minSpan = document.querySelector(".time.mins span");
 const secSpan = document.querySelector(".time.seconds span");
 
-const june1 = new Date("2024-06-01T00:00:00");
-const april12 = new Date("2024-04-12T00:00:00");
-const may26 = new Date("2024-05-26T00:00:00");
-const dec30 = new Date("2024-12-30T00:00:00");
-const jan10_2025 = new Date("2025-01-10T00:00:00");
-const april8_2025 = new Date("2025-04-08T00:00:00");
-const april18_2025 = new Date("2025-04-18T00:00:00");
-const may25_2025 = new Date("2025-05-25T00:00:00");
-const june1_2025 = new Date("2025-06-01T00:00:00");
-const aug_27_2025 = new Date("2025-08-27T00:00:00");
-const sep_1_2025 = new Date("2025-09-01T00:00:00");
-const dec_28_2025 = new Date("2025-12-28T00:00:00");
-const jan_02_2026 = new Date("2026-01-02T00:00:00");
-const jan_15_2026 = new Date("2026-01-15T00:00:00");
-const jan_31_2026 = new Date("2026-01-31T00:00:00");
-const may_19_2026 = new Date("2026-05-19T00:00:00");
-// add new date here whenever decided
-const currentDate = new Date();
-const startDate = april12;
+const MS_PER_DAY = 1000 * 60 * 60 * 24;
 
-const ap12DotNum = Math.floor((april12 - startDate) / (1000 * 60 * 60 * 24));
-const may26DotNum = Math.floor((may26 - startDate) / (1000 * 60 * 60 * 24));
-const june1DotNum = Math.floor((june1 - startDate) / (1000 * 60 * 60 * 24));
-const dec30DotNum = Math.floor((dec30 - startDate) / (1000 * 60 * 60 * 24));
-const jan10_2025_num = Math.floor(
-  (jan10_2025 - startDate) / (1000 * 60 * 60 * 24),
-);
-const april8_2025_num = Math.floor(
-  (april8_2025 - startDate) / (1000 * 60 * 60 * 24),
-);
-const april18_2025_num = Math.floor(
-  (april18_2025 - startDate) / (1000 * 60 * 60 * 24),
-);
-const may25_2025_num = Math.floor(
-  (may25_2025 - startDate) / (1000 * 60 * 60 * 24),
-);
-const june1_20205_num = Math.floor(
-  (june1_2025 - startDate) / (1000 * 60 * 60 * 24),
-);
-const aug_27_2025_num = Math.floor(
-  (aug_27_2025 - startDate) / (1000 * 60 * 60 * 24),
-);
-const sep_1_2025_num = Math.floor(
-  (sep_1_2025 - startDate) / (1000 * 60 * 60 * 24),
-);
-const dec_28_2025_num = Math.floor(
-  (dec_28_2025 - startDate) / (1000 * 60 * 60 * 24),
-);
-const jan_02_2026_num = Math.floor(
-  (jan_02_2026 - startDate) / (1000 * 60 * 60 * 24),
-);
-const jan_15_2026_num = Math.floor(
-  (jan_15_2026 - startDate) / (1000 * 60 * 60 * 24),
-);
-const jan_31_2026_num = Math.floor(
-  (jan_31_2026 - startDate) / (1000 * 60 * 60 * 24),
-);
-const may_19_2026_num = Math.floor(
-  (may_19_2026 - startDate) / (1000 * 60 * 60 * 24),
-);
-// add new dotnum here whenever decided for end and start
-const currDotNum = Math.floor(
-  (currentDate - startDate) / (1000 * 60 * 60 * 24),
-);
+const TIMELINE = {
+  startDate: "2024-04-12T00:00:00",
+  endDate: "2026-05-19T00:00:00",
+  progressStartDate: "2026-01-31T00:00:00",
+  tripRange: {
+    start: "2024-05-27T00:00:00",
+    end: "2024-05-30T00:00:00",
+  },
+  togetherRanges: [
+    { start: "2024-04-12T00:00:00", end: "2024-06-01T00:00:00" },
+    { start: "2024-12-30T00:00:00", end: "2025-01-10T00:00:00" },
+    { start: "2025-04-08T00:00:00", end: "2025-04-18T00:00:00" },
+    { start: "2025-05-25T00:00:00", end: "2025-06-01T00:00:00" },
+    { start: "2025-08-27T00:00:00", end: "2025-09-01T00:00:00" },
+    { start: "2025-12-28T00:00:00", end: "2026-01-02T00:00:00" },
+    { start: "2026-01-15T00:00:00", end: "2026-01-31T00:00:00" },
+  ],
+};
+
+function parseDate(value) {
+  return new Date(value);
+}
+
+function daysBetween(start, end) {
+  return Math.floor((end - start) / MS_PER_DAY);
+}
+
+const startDate = parseDate(TIMELINE.startDate);
+const endDate = parseDate(TIMELINE.endDate);
+const progressStartDate = parseDate(TIMELINE.progressStartDate);
+
+const tripRange = {
+  start: daysBetween(startDate, parseDate(TIMELINE.tripRange.start)),
+  end: daysBetween(startDate, parseDate(TIMELINE.tripRange.end)),
+};
+
+const togetherRanges = TIMELINE.togetherRanges.map((range) => ({
+  start: daysBetween(startDate, parseDate(range.start)),
+  end: daysBetween(startDate, parseDate(range.end)),
+}));
+
+const currDotNum = daysBetween(startDate, new Date());
+const backStartDot = daysBetween(startDate, endDate);
 
 function updateProgress() {
   const now = new Date();
-  const start = jan_31_2026;
-  // adjust this every time a new day is decided
-  const end = may_19_2026;
+  const start = progressStartDate;
+  const end = endDate;
   const total = end - start;
   const current = now - start;
   const progress = Math.min(100, Math.max(0, (current / total) * 100));
@@ -108,10 +88,9 @@ function updateProgress() {
   requestAnimationFrame(animate);
 }
 
-// TODO: have to globalize these start end end dates
 function updateTimes() {
   const now = new Date();
-  const end = may_19_2026;
+  const end = endDate;
   const diffRemaining = end - now;
   const daysRemaining = Math.floor(diffRemaining / (1000 * 60 * 60 * 24));
   const hoursRemaining = Math.floor(diffRemaining / (1000 * 60 * 60));
@@ -137,19 +116,16 @@ function calculateGapSize(dotSize) {
 }
 
 function findDotColor(currDot) {
-  if (currDot > may26DotNum && currDot <= may26DotNum + 4) {
+  const inTripRange = currDot >= tripRange.start && currDot <= tripRange.end;
+  const inTogetherRange = togetherRanges.some(
+    (range) => currDot >= range.start && currDot <= range.end,
+  );
+
+  if (inTripRange) {
     return "trip";
-  } else if (
-    (currDot >= ap12DotNum && currDot <= june1DotNum) ||
-    (currDot >= dec30DotNum && currDot <= jan10_2025_num) ||
-    (currDot >= april8_2025_num && currDot <= april18_2025_num) ||
-    (currDot >= may25_2025_num && currDot <= june1_20205_num) ||
-    (currDot >= aug_27_2025_num && currDot <= sep_1_2025_num) ||
-    (currDot >= dec_28_2025_num && currDot <= jan_02_2026_num) ||
-    (currDot >= jan_15_2026_num && currDot <= jan_31_2026_num)
-  ) {
+  } else if (inTogetherRange) {
     return "together";
-  } else if (currDot >= may_19_2026_num) {
+  } else if (currDot >= backStartDot) {
     return "back";
   } else if (currDot === currDotNum) {
     return "curr";
@@ -297,8 +273,6 @@ setInterval(() => {
   updateProgress();
 }, 1000);
 
-// change this every time a new date is established
-const endDate = new Date("2025-12-19T00:00:00");
-totalDays = Math.floor((endDate - april12) / (1000 * 60 * 60 * 24));
+const totalDays = daysBetween(startDate, endDate);
 console.log(totalDays + 1);
 createDots(totalDays);
