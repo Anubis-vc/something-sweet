@@ -15,20 +15,22 @@ const TIMELINE = {
   startDate: "2024-04-12T00:00:00",
   endDate: "2026-05-19T00:00:00",
   progressStartDate: "2026-01-31T00:00:00",
-  tripRange: {
-    start: "2024-05-27T00:00:00",
-    end: "2024-05-30T00:00:00",
+  statusRanges: {
+    trip: [{ start: "2024-05-27T00:00:00", end: "2024-05-30T00:00:00" }],
+    together: [
+      { start: "2024-04-12T00:00:00", end: "2024-06-01T00:00:00" },
+      { start: "2024-12-30T00:00:00", end: "2025-01-10T00:00:00" },
+      { start: "2025-04-08T00:00:00", end: "2025-04-18T00:00:00" },
+      { start: "2025-05-25T00:00:00", end: "2025-06-01T00:00:00" },
+      { start: "2025-08-27T00:00:00", end: "2025-09-01T00:00:00" },
+      { start: "2025-12-28T00:00:00", end: "2026-01-02T00:00:00" },
+      { start: "2026-01-15T00:00:00", end: "2026-01-31T00:00:00" },
+    ],
+    back: [{ start: "2026-05-19T00:00:00", end: "2026-05-19T00:00:00" }],
   },
-  togetherRanges: [
-    { start: "2024-04-12T00:00:00", end: "2024-06-01T00:00:00" },
-    { start: "2024-12-30T00:00:00", end: "2025-01-10T00:00:00" },
-    { start: "2025-04-08T00:00:00", end: "2025-04-18T00:00:00" },
-    { start: "2025-05-25T00:00:00", end: "2025-06-01T00:00:00" },
-    { start: "2025-08-27T00:00:00", end: "2025-09-01T00:00:00" },
-    { start: "2025-12-28T00:00:00", end: "2026-01-02T00:00:00" },
-    { start: "2026-01-15T00:00:00", end: "2026-01-31T00:00:00" },
-  ],
 };
+
+const STATUS_PRIORITY = ["trip", "together", "back"];
 
 function parseDate(value) {
   return new Date(value);
@@ -38,22 +40,34 @@ function daysBetween(start, end) {
   return Math.floor((end - start) / MS_PER_DAY);
 }
 
+function compileStatusRanges(statusRanges, start) {
+  const compiled = {};
+  for (const [status, ranges] of Object.entries(statusRanges)) {
+    compiled[status] = ranges.map((range) => ({
+      start: daysBetween(start, parseDate(range.start)),
+      end: daysBetween(start, parseDate(range.end)),
+    }));
+  }
+  return compiled;
+}
+
+function isInAnyRange(dayIndex, ranges) {
+  return ranges.some(
+    (range) => dayIndex >= range.start && dayIndex <= range.end,
+  );
+}
+
 const startDate = parseDate(TIMELINE.startDate);
 const endDate = parseDate(TIMELINE.endDate);
 const progressStartDate = parseDate(TIMELINE.progressStartDate);
-
-const tripRange = {
-  start: daysBetween(startDate, parseDate(TIMELINE.tripRange.start)),
-  end: daysBetween(startDate, parseDate(TIMELINE.tripRange.end)),
-};
-
-const togetherRanges = TIMELINE.togetherRanges.map((range) => ({
-  start: daysBetween(startDate, parseDate(range.start)),
-  end: daysBetween(startDate, parseDate(range.end)),
-}));
+const compiledStatusRanges = compileStatusRanges(
+  TIMELINE.statusRanges,
+  startDate,
+);
+const totalDays = daysBetween(startDate, endDate);
+const totalDots = totalDays + 1;
 
 const currDotNum = daysBetween(startDate, new Date());
-const backStartDot = daysBetween(startDate, endDate);
 
 function updateProgress() {
   const now = new Date();
@@ -105,9 +119,9 @@ function updateTimes() {
 
 function calculateDotSize() {
   const containerWidth = container.offsetWidth;
-  if (containerWidth < 400) return 6;
-  if (containerWidth < 768) return 8;
-  if (containerWidth < 1024) return 10;
+  if (containerWidth < 400) return 4;
+  if (containerWidth < 768) return 6;
+  if (containerWidth < 1024) return 8;
   return 12;
 }
 
@@ -115,21 +129,16 @@ function calculateGapSize(dotSize) {
   return dotSize / 0.75;
 }
 
-function findDotColor(currDot) {
-  const inTripRange = currDot >= tripRange.start && currDot <= tripRange.end;
-  const inTogetherRange = togetherRanges.some(
-    (range) => currDot >= range.start && currDot <= range.end,
-  );
+function getStatusForDay(dayIndex, todayIndex, statusRanges) {
+  for (const status of STATUS_PRIORITY) {
+    if (isInAnyRange(dayIndex, statusRanges[status] || [])) {
+      return status;
+    }
+  }
 
-  if (inTripRange) {
-    return "trip";
-  } else if (inTogetherRange) {
-    return "together";
-  } else if (currDot >= backStartDot) {
-    return "back";
-  } else if (currDot === currDotNum) {
+  if (dayIndex === todayIndex) {
     return "curr";
-  } else if (currDot > currDotNum) {
+  } else if (dayIndex > todayIndex) {
     return "pending";
   } else {
     return "complete";
@@ -216,12 +225,6 @@ function createDots(totalDots) {
   const dotSize = calculateDotSize();
   const gapSize = calculateGapSize(dotSize);
 
-  // added to help dots mantain color on resize
-  // const existingDots = Array.from(container.children).map(dot => {
-  //     const classes = Array.from(dot.classList);
-  //     return classes.find(cls => cls !== 'dot'); // Store the color class
-  // });
-
   container.innerHTML = "";
 
   root.style.setProperty("--dotSize", `${dotSize}px`);
@@ -231,7 +234,7 @@ function createDots(totalDots) {
   for (let i = 0; i < totalDots; i++) {
     const dot = document.createElement("div");
     // const dotColor = existingDots[i] || findDotColor(i);
-    const dotColor = findDotColor(i);
+    const dotColor = getStatusForDay(i, currDotNum, compiledStatusRanges);
     dot.className = `dot ${dotColor}`;
     setupDotListeners(dot, i);
 
@@ -255,9 +258,7 @@ function setupResizeObserver() {
   const resizeObserver = new ResizeObserver((entries) => {
     for (let entry of entries) {
       if (entry.target === container) {
-        // TODO: fix this for different numbers of dots
-        // fix this every time a new date is established
-        createDots(768);
+        createDots(totalDots);
       }
     }
   });
@@ -273,6 +274,4 @@ setInterval(() => {
   updateProgress();
 }, 1000);
 
-const totalDays = daysBetween(startDate, endDate);
-console.log(totalDays + 1);
-createDots(totalDays);
+createDots(totalDots);
