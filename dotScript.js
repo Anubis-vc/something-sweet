@@ -13,8 +13,8 @@ const MS_PER_DAY = 1000 * 60 * 60 * 24;
 
 const TIMELINE = {
   startDate: "2024-04-12T00:00:00",
-  endDate: "2026-05-19T00:00:00",
-  progressStartDate: "2026-01-31T00:00:00",
+  endDate: "2026-07-17T00:00:00",
+  progressStartDate: "2026-05-27T00:00:00",
   statusRanges: {
     trip: [{ start: "2024-05-27T00:00:00", end: "2024-05-30T00:00:00" }],
     together: [
@@ -25,8 +25,9 @@ const TIMELINE = {
       { start: "2025-08-27T00:00:00", end: "2025-09-01T00:00:00" },
       { start: "2025-12-28T00:00:00", end: "2026-01-02T00:00:00" },
       { start: "2026-01-15T00:00:00", end: "2026-01-31T00:00:00" },
+      { start: "2026-05-19T00:00:00", end: "2026-05-27T00:00:00" },
     ],
-    back: [{ start: "2026-05-19T00:00:00", end: "2026-05-19T00:00:00" }],
+    back: [{ start: "2026-07-17T00:00:00", end: "2026-07-17T00:00:00" }],
   },
 };
 
@@ -119,14 +120,14 @@ function updateTimes() {
 
 function calculateDotSize() {
   const containerWidth = container.offsetWidth;
-  if (containerWidth < 400) return 4;
-  if (containerWidth < 768) return 6;
-  if (containerWidth < 1024) return 8;
+  if (containerWidth < 400) return 3;
+  if (containerWidth < 768) return 4;
+  if (containerWidth < 1024) return 6;
   return 12;
 }
 
 function calculateGapSize(dotSize) {
-  return dotSize / 0.75;
+  return dotSize / 0.85;
 }
 
 function getStatusForDay(dayIndex, todayIndex, statusRanges) {
@@ -233,7 +234,6 @@ function createDots(totalDots) {
   // Create all dots
   for (let i = 0; i < totalDots; i++) {
     const dot = document.createElement("div");
-    // const dotColor = existingDots[i] || findDotColor(i);
     const dotColor = getStatusForDay(i, currDotNum, compiledStatusRanges);
     dot.className = `dot ${dotColor}`;
     setupDotListeners(dot, i);
