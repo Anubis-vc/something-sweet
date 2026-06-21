@@ -12,41 +12,126 @@ const secSpan = document.querySelector(".time.seconds span");
 const MS_PER_DAY = 1000 * 60 * 60 * 24;
 
 const TIMELINE = {
-  startDate: "2024-04-12T00:00:00",
-  endDate: "2026-07-17T00:00:00",
-  progressStartDate: "2026-05-27T00:00:00",
+  timeZone: "America/New_York",
+  startDate: "2024-04-12",
+  endDate: "2026-07-17",
+  endTime: "20:00:00",
+  progressStartDate: "2026-05-27",
+  progressStartTime: "00:00:00",
   statusRanges: {
-    trip: [{ start: "2024-05-27T00:00:00", end: "2024-05-30T00:00:00" }],
+    trip: [{ start: "2024-05-27", end: "2024-05-30" }],
     together: [
-      { start: "2024-04-12T00:00:00", end: "2024-06-01T00:00:00" },
-      { start: "2024-12-30T00:00:00", end: "2025-01-10T00:00:00" },
-      { start: "2025-04-08T00:00:00", end: "2025-04-18T00:00:00" },
-      { start: "2025-05-25T00:00:00", end: "2025-06-01T00:00:00" },
-      { start: "2025-08-27T00:00:00", end: "2025-09-01T00:00:00" },
-      { start: "2025-12-28T00:00:00", end: "2026-01-02T00:00:00" },
-      { start: "2026-01-15T00:00:00", end: "2026-01-31T00:00:00" },
-      { start: "2026-05-19T00:00:00", end: "2026-05-27T00:00:00" },
+      { start: "2024-04-12", end: "2024-06-01" },
+      { start: "2024-12-30", end: "2025-01-10" },
+      { start: "2025-04-08", end: "2025-04-18" },
+      { start: "2025-05-25", end: "2025-06-01" },
+      { start: "2025-08-27", end: "2025-09-01" },
+      { start: "2025-12-28", end: "2026-01-02" },
+      { start: "2026-01-15", end: "2026-01-31" },
+      { start: "2026-05-19", end: "2026-05-27" },
     ],
-    back: [{ start: "2026-07-17T00:00:00", end: "2026-07-17T00:00:00" }],
+    back: [{ start: "2026-07-17", end: "2026-07-17" }],
   },
 };
 
 const STATUS_PRIORITY = ["trip", "together", "back"];
 
-function parseDate(value) {
-  return new Date(value);
+const timeZoneFormatter = new Intl.DateTimeFormat("en-US", {
+  timeZone: TIMELINE.timeZone,
+  year: "numeric",
+  month: "2-digit",
+  day: "2-digit",
+  hour: "2-digit",
+  minute: "2-digit",
+  second: "2-digit",
+  hour12: false,
+});
+
+function getFormatterParts(formatter, date) {
+  return Object.fromEntries(
+    formatter
+      .formatToParts(date)
+      .filter((part) => part.type !== "literal")
+      .map((part) => [part.type, Number(part.value)]),
+  );
+}
+
+function getDateParts(value) {
+  const match = value.match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if (!match) {
+    throw new Error(`Invalid timeline date: ${value}`);
+  }
+
+  return {
+    year: Number(match[1]),
+    month: Number(match[2]),
+    day: Number(match[3]),
+  };
+}
+
+function getTimeParts(value) {
+  const match = value.match(/^(\d{2}):(\d{2})(?::(\d{2}))?$/);
+  if (!match) {
+    throw new Error(`Invalid timeline time: ${value}`);
+  }
+
+  return {
+    hour: Number(match[1]),
+    minute: Number(match[2]),
+    second: Number(match[3] || 0),
+  };
+}
+
+function getTimeZoneOffsetMs(date) {
+  const parts = getFormatterParts(timeZoneFormatter, date);
+  const hour = parts.hour === 24 ? 0 : parts.hour;
+  const zonedUtcTime = Date.UTC(
+    parts.year,
+    parts.month - 1,
+    parts.day,
+    hour,
+    parts.minute,
+    parts.second,
+  );
+
+  return zonedUtcTime - date.getTime();
+}
+
+function getDateInTimeZone(dateValue, timeValue) {
+  const dateParts = getDateParts(dateValue);
+  const timeParts = getTimeParts(timeValue);
+  const utcGuess = Date.UTC(
+    dateParts.year,
+    dateParts.month - 1,
+    dateParts.day,
+    timeParts.hour,
+    timeParts.minute,
+    timeParts.second,
+  );
+
+  let date = new Date(utcGuess - getTimeZoneOffsetMs(new Date(utcGuess)));
+  date = new Date(utcGuess - getTimeZoneOffsetMs(date));
+  return date;
+}
+
+function toDayNumber({ year, month, day }) {
+  return Math.floor(Date.UTC(year, month - 1, day) / MS_PER_DAY);
+}
+
+function getCurrentDayNumber() {
+  return toDayNumber(getFormatterParts(timeZoneFormatter, new Date()));
 }
 
 function daysBetween(start, end) {
-  return Math.floor((end - start) / MS_PER_DAY);
+  return toDayNumber(getDateParts(end)) - toDayNumber(getDateParts(start));
 }
 
-function compileStatusRanges(statusRanges, start) {
+function compileStatusRanges(statusRanges) {
   const compiled = {};
   for (const [status, ranges] of Object.entries(statusRanges)) {
     compiled[status] = ranges.map((range) => ({
-      start: daysBetween(start, parseDate(range.start)),
-      end: daysBetween(start, parseDate(range.end)),
+      start: daysBetween(TIMELINE.startDate, range.start),
+      end: daysBetween(TIMELINE.startDate, range.end),
     }));
   }
   return compiled;
@@ -58,17 +143,19 @@ function isInAnyRange(dayIndex, ranges) {
   );
 }
 
-const startDate = parseDate(TIMELINE.startDate);
-const endDate = parseDate(TIMELINE.endDate);
-const progressStartDate = parseDate(TIMELINE.progressStartDate);
-const compiledStatusRanges = compileStatusRanges(
-  TIMELINE.statusRanges,
-  startDate,
+const endDate = getDateInTimeZone(TIMELINE.endDate, TIMELINE.endTime);
+const progressStartDate = getDateInTimeZone(
+  TIMELINE.progressStartDate,
+  TIMELINE.progressStartTime,
 );
-const totalDays = daysBetween(startDate, endDate);
+const compiledStatusRanges = compileStatusRanges(TIMELINE.statusRanges);
+const totalDays = daysBetween(TIMELINE.startDate, TIMELINE.endDate);
 const totalDots = totalDays + 1;
+let renderedDotNum = null;
 
-const currDotNum = daysBetween(startDate, new Date());
+function getCurrentDotNum() {
+  return getCurrentDayNumber() - toDayNumber(getDateParts(TIMELINE.startDate));
+}
 
 function updateProgress() {
   const now = new Date();
@@ -147,11 +234,16 @@ function getStatusForDay(dayIndex, todayIndex, statusRanges) {
 }
 
 function formatDate(days) {
-  const newDate = new Date(startDate);
-  newDate.setDate(newDate.getDate() + days);
-  const dateString = newDate.toDateString().split(" ");
-  const shortDate = `${dateString[1]} ${dateString[2]}`;
-  return shortDate;
+  const startParts = getDateParts(TIMELINE.startDate);
+  const date = new Date(
+    Date.UTC(startParts.year, startParts.month - 1, startParts.day + days),
+  );
+  const shortMonth = date.toLocaleString("en-US", {
+    month: "short",
+    timeZone: "UTC",
+  });
+
+  return `${shortMonth} ${String(date.getUTCDate()).padStart(2, "0")}`;
 }
 
 function setupDotListeners(dot, index) {
@@ -225,6 +317,8 @@ function setupDotListeners(dot, index) {
 function createDots(totalDots) {
   const dotSize = calculateDotSize();
   const gapSize = calculateGapSize(dotSize);
+  const currDotNum = getCurrentDotNum();
+  renderedDotNum = currDotNum;
 
   container.innerHTML = "";
 
@@ -272,6 +366,9 @@ updateProgress();
 setInterval(() => {
   updateTimes();
   updateProgress();
+  if (getCurrentDotNum() !== renderedDotNum) {
+    createDots(totalDots);
+  }
 }, 1000);
 
 createDots(totalDots);
