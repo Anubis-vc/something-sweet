@@ -36,6 +36,7 @@ const TIMELINE = {
 
 const STATUS_PRIORITY = ["trip", "together", "back"];
 
+// Time zone helpers
 const timeZoneFormatter = new Intl.DateTimeFormat("en-US", {
   timeZone: TIMELINE.timeZone,
   year: "numeric",
@@ -122,16 +123,17 @@ function getCurrentDayNumber() {
   return toDayNumber(getFormatterParts(timeZoneFormatter, new Date()));
 }
 
+// Calendar day helpers
 function daysBetween(start, end) {
   return toDayNumber(getDateParts(end)) - toDayNumber(getDateParts(start));
 }
 
-function compileStatusRanges(statusRanges) {
+function compileStatusRanges(statusRanges, timelineStartDate) {
   const compiled = {};
   for (const [status, ranges] of Object.entries(statusRanges)) {
     compiled[status] = ranges.map((range) => ({
-      start: daysBetween(TIMELINE.startDate, range.start),
-      end: daysBetween(TIMELINE.startDate, range.end),
+      start: daysBetween(timelineStartDate, range.start),
+      end: daysBetween(timelineStartDate, range.end),
     }));
   }
   return compiled;
@@ -143,26 +145,30 @@ function isInAnyRange(dayIndex, ranges) {
   );
 }
 
-const endDate = getDateInTimeZone(TIMELINE.endDate, TIMELINE.endTime);
-const progressStartDate = getDateInTimeZone(
+// Derived timeline values
+const timelineStartDay = toDayNumber(getDateParts(TIMELINE.startDate));
+const countdownEnd = getDateInTimeZone(TIMELINE.endDate, TIMELINE.endTime);
+const progressStart = getDateInTimeZone(
   TIMELINE.progressStartDate,
   TIMELINE.progressStartTime,
 );
-const compiledStatusRanges = compileStatusRanges(TIMELINE.statusRanges);
+const compiledStatusRanges = compileStatusRanges(
+  TIMELINE.statusRanges,
+  TIMELINE.startDate,
+);
 const totalDays = daysBetween(TIMELINE.startDate, TIMELINE.endDate);
 const totalDots = totalDays + 1;
 let renderedDotNum = null;
 
 function getCurrentDotNum() {
-  return getCurrentDayNumber() - toDayNumber(getDateParts(TIMELINE.startDate));
+  return getCurrentDayNumber() - timelineStartDay;
 }
 
+// Countdown and progress
 function updateProgress() {
   const now = new Date();
-  const start = progressStartDate;
-  const end = endDate;
-  const total = end - start;
-  const current = now - start;
+  const total = countdownEnd - progressStart;
+  const current = now - progressStart;
   const progress = Math.min(100, Math.max(0, (current / total) * 100));
 
   let startProgress = parseFloat(progressBar.style.width) || 0;
@@ -192,8 +198,7 @@ function updateProgress() {
 
 function updateTimes() {
   const now = new Date();
-  const end = endDate;
-  const diffRemaining = end - now;
+  const diffRemaining = Math.max(0, countdownEnd - now);
   const daysRemaining = Math.floor(diffRemaining / (1000 * 60 * 60 * 24));
   const hoursRemaining = Math.floor(diffRemaining / (1000 * 60 * 60));
   const minsRemaining = Math.floor(diffRemaining / (1000 * 60));
@@ -217,6 +222,7 @@ function calculateGapSize(dotSize) {
   return dotSize / 0.85;
 }
 
+// Dot rendering
 function getStatusForDay(dayIndex, todayIndex, statusRanges) {
   for (const status of STATUS_PRIORITY) {
     if (isInAnyRange(dayIndex, statusRanges[status] || [])) {
@@ -233,10 +239,14 @@ function getStatusForDay(dayIndex, todayIndex, statusRanges) {
   }
 }
 
-function formatDate(days) {
+function formatTimelineDate(dayOffset) {
   const startParts = getDateParts(TIMELINE.startDate);
   const date = new Date(
-    Date.UTC(startParts.year, startParts.month - 1, startParts.day + days),
+    Date.UTC(
+      startParts.year,
+      startParts.month - 1,
+      startParts.day + dayOffset,
+    ),
   );
   const shortMonth = date.toLocaleString("en-US", {
     month: "short",
@@ -246,10 +256,11 @@ function formatDate(days) {
   return `${shortMonth} ${String(date.getUTCDate()).padStart(2, "0")}`;
 }
 
+// Tooltip behavior
 function setupDotListeners(dot, index) {
   const handleMouseEnter = (e) => {
     const rect = e.target.getBoundingClientRect();
-    const label = formatDate(index);
+    const label = formatTimelineDate(index);
 
     tooltip.textContent = label;
 
@@ -336,18 +347,7 @@ function createDots(totalDots) {
   }
 }
 
-function debounce(func, wait) {
-  let timeout = null;
-  return function executedFunction(...args) {
-    const later = () => {
-      clearTimeout(timeout);
-      func(...args);
-    };
-    clearTimeout(timeout);
-    timeout = setTimeout(later, wait);
-  };
-}
-
+// Startup
 function setupResizeObserver() {
   const resizeObserver = new ResizeObserver((entries) => {
     for (let entry of entries) {
