@@ -14,9 +14,9 @@ const MS_PER_DAY = 1000 * 60 * 60 * 24;
 const TIMELINE = {
   timeZone: "America/New_York",
   startDate: "2024-04-12",
-  endDate: "2026-07-17",
+  endDate: "2026-11-20",
   endTime: "20:00:00",
-  progressStartDate: "2026-05-27",
+  progressStartDate: "2026-07-24",
   progressStartTime: "00:00:00",
   statusRanges: {
     trip: [{ start: "2024-05-27", end: "2024-05-30" }],
@@ -29,8 +29,9 @@ const TIMELINE = {
       { start: "2025-12-28", end: "2026-01-02" },
       { start: "2026-01-15", end: "2026-01-31" },
       { start: "2026-05-19", end: "2026-05-27" },
+      { start: "2026-07-17", end: "2026-07-24" },
     ],
-    back: [{ start: "2026-07-17", end: "2026-07-17" }],
+    back: [{ start: "2026-11-20", end: "2026-11-20" }],
   },
 };
 
@@ -242,11 +243,7 @@ function getStatusForDay(dayIndex, todayIndex, statusRanges) {
 function formatTimelineDate(dayOffset) {
   const startParts = getDateParts(TIMELINE.startDate);
   const date = new Date(
-    Date.UTC(
-      startParts.year,
-      startParts.month - 1,
-      startParts.day + dayOffset,
-    ),
+    Date.UTC(startParts.year, startParts.month - 1, startParts.day + dayOffset),
   );
   const shortMonth = date.toLocaleString("en-US", {
     month: "short",
