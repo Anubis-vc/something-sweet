@@ -14,7 +14,7 @@ const MS_PER_DAY = 1000 * 60 * 60 * 24;
 const TIMELINE = {
   timeZone: "America/New_York",
   startDate: "2024-04-12",
-  endDate: "2026-11-20",
+  endDate: "2026-10-26",
   endTime: "20:00:00",
   progressStartDate: "2026-07-24",
   progressStartTime: "00:00:00",
@@ -31,7 +31,7 @@ const TIMELINE = {
       { start: "2026-05-19", end: "2026-05-27" },
       { start: "2026-07-17", end: "2026-07-24" },
     ],
-    back: [{ start: "2026-11-20", end: "2026-11-20" }],
+    back: [{ start: "2026-10-26", end: "2026-10-26" }],
   },
 };
 
